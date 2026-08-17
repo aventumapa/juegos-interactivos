@@ -86,7 +86,7 @@ import kotlin.math.sqrt
 internal const val PUZZLE_BATCH_SIZE = 6
 
 internal fun puzzleBatchForProgress(codes: List<String>, placedCount: Int): List<String> {
-    if (codes.isEmpty()) return emptyList()
+    if (codes.isEmpty() || placedCount >= codes.size) return emptyList()
     val firstIndex = (placedCount / PUZZLE_BATCH_SIZE) * PUZZLE_BATCH_SIZE
     return codes.drop(firstIndex.coerceAtMost(codes.size)).take(PUZZLE_BATCH_SIZE)
 }
