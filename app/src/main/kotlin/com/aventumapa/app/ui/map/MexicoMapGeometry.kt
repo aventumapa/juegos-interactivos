@@ -30,9 +30,13 @@ fun rememberMexicoMapGeometry(): List<MexicoStateShape> {
 }
 
 private fun loadMexicoMapGeometry(context: Context): List<MexicoStateShape> {
-    val payload = GZIPInputStream(context.assets.open("mexico_states.json.gz"))
-        .bufferedReader()
-        .use { it.readText() }
+    val payload = runCatching {
+        context.assets.open("mexico_states.json").bufferedReader().use { it.readText() }
+    }.getOrElse {
+        GZIPInputStream(context.assets.open("mexico_states.json.gz"))
+            .bufferedReader()
+            .use { reader -> reader.readText() }
+    }
     val states = JSONObject(payload).getJSONArray("states")
     return buildList(states.length()) {
         repeat(states.length()) { stateIndex ->

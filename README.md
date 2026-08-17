@@ -4,7 +4,7 @@ AventuMapa es una aplicación Android educativa, local y sin anuncios para que n
 
 ## Estado actual
 
-Este repositorio contiene la versión jugable audiovisual 0.5.0:
+Este repositorio contiene la versión jugable audiovisual 0.5.1:
 
 - Perfil infantil local con alias y avatar.
 - Identidad visual Atlas Nocturno con marca vectorial, Explorín y tarjetas luminosas.
