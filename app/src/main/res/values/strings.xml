@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">AventuMapa</string>
+    <string name="welcome_title">Tu aventura por México comienza aquí</string>
+    <string name="welcome_subtitle">Explora, juega y descubre cada rincón del mapa.</string>
+    <string name="alias_label">¿Cómo quieres que te llamemos?</string>
+    <string name="alias_hint">Escribe un apodo</string>
+    <string name="avatar_label">Elige tu insignia de exploración</string>
+    <string name="start_adventure">Comenzar aventura</string>
+    <string name="continue_adventure">Continuar aventura</string>
+    <string name="home_greeting">¡Hola, %1$s!</string>
+    <string name="home_prompt">¿Qué quieres descubrir hoy?</string>
+    <string name="explore_title">Explora las entidades</string>
+    <string name="explore_subtitle">Conoce su nombre, región y capital.</string>
+    <string name="quiz_title">Reto de capitales</string>
+    <string name="memory_title">Memorama</string>
+    <string name="parents_title">Área para adultos</string>
+    <string name="back">Regresar</string>
+    <string name="next">Siguiente</string>
+    <string name="finish">Terminar</string>
+    <string name="correct_feedback">¡Excelente! Esa es la respuesta.</string>
+    <string name="incorrect_feedback">¡Casi! Observa la pista y probemos otra vez.</string>
+    <string name="capital_label">Capital</string>
+    <string name="region_label">Región educativa</string>
+    <string name="small_entity_message">Lo ampliamos para que puedas observar mejor su forma</string>
+    <string name="small_entity_pending">La silueta oficial se mostrará aquí en la entrega del mapa.</string>
+    <string name="source_note">Contenido piloto sujeto a validación final con catálogos oficiales.</string>
+    <string name="offline_badge">Funciona sin internet</string>
+</resources>
+
