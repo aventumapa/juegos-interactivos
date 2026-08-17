@@ -71,5 +71,12 @@ class GameEngineTest {
         assertEquals(LearningStatus.REVIEW, update.status)
         assertEquals(101, update.nextReviewEpochDay)
     }
-}
 
+    @Test
+    fun `motivation coach personalizes phrases without exposing extra data`() {
+        val phrase = MotivationCoach.success("Luna", kotlin.random.Random(7))
+
+        assertTrue(phrase.contains("Luna"))
+        assertTrue(phrase.length < 100)
+    }
+}
