@@ -1,47 +1,35 @@
 package com.aventumapa.app.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private val LightColors = lightColorScheme(
-    primary = ExplorerTealDark,
-    onPrimary = Color.White,
-    primaryContainer = PaleTeal,
-    onPrimaryContainer = NightBlue,
-    secondary = WarmCoral,
-    onSecondary = NightBlue,
-    secondaryContainer = PaleYellow,
-    onSecondaryContainer = NightBlue,
-    tertiary = SunYellow,
-    background = PaperCream,
-    onBackground = NightBlue,
-    surface = SoftCream,
-    onSurface = NightBlue,
-    error = ErrorRed,
-)
-
-private val DarkColors = darkColorScheme(
-    primary = Color(0xFF6CD8D1),
+private val AtlasNocturnoColors = darkColorScheme(
+    primary = CyanElectric,
     onPrimary = DeepNightBlue,
-    primaryContainer = Color(0xFF105F5D),
-    onPrimaryContainer = Color(0xFFDAFFFC),
-    secondary = Color(0xFFFFA99E),
+    primaryContainer = CardRaised,
+    onPrimaryContainer = IceWhite,
+    secondary = WarmCoral,
     onSecondary = DeepNightBlue,
     tertiary = SunYellow,
-    background = DeepNightBlue,
-    onBackground = Color(0xFFF7F2E7),
-    surface = Color(0xFF17324D),
-    onSurface = Color(0xFFF7F2E7),
+    onTertiary = DeepNightBlue,
+    background = AtlasNight,
+    onBackground = IceWhite,
+    surface = CardNavy,
+    onSurface = IceWhite,
+    surfaceVariant = CardRaised,
+    onSurfaceVariant = IceWhite,
+    outline = Color(0xFF1B5272),
+    error = ErrorRed,
 )
 
 private val AventuTypography = Typography(
@@ -62,6 +50,12 @@ private val AventuTypography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
     ),
+    titleMedium = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+        lineHeight = 23.sp,
+    ),
     bodyLarge = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Medium,
@@ -75,16 +69,22 @@ private val AventuTypography = Typography(
     ),
 )
 
+private val AventuShapes = Shapes(
+    extraSmall = RoundedCornerShape(10.dp),
+    small = RoundedCornerShape(14.dp),
+    medium = RoundedCornerShape(20.dp),
+    large = RoundedCornerShape(28.dp),
+    extraLarge = RoundedCornerShape(34.dp),
+)
+
 @Composable
 fun AventuMapaTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
+        colorScheme = AtlasNocturnoColors,
         typography = AventuTypography,
-        shapes = Shapes(),
+        shapes = AventuShapes,
         content = content,
     )
 }
-

@@ -4,18 +4,25 @@ AventuMapa es una aplicación Android educativa, local y sin anuncios para que n
 
 ## Estado actual
 
-Este repositorio contiene el primer corte vertical jugable:
+Este repositorio contiene la versión jugable audiovisual 0.5.0:
 
 - Perfil infantil local con alias y avatar.
-- Inicio con experiencia, estrellas y progreso.
-- Explorador inicial de las 32 entidades y sus capitales.
-- Reto de opción múltiple de capitales.
-- Memorama entidad–capital.
+- Identidad visual Atlas Nocturno con marca vectorial, Explorín y tarjetas luminosas.
+- Inicio compacto inspirado en una aventura premium: saludo, XP, racha, cuatro actividades ilustradas y navegación inferior visibles en una sola pantalla.
+- Mapa vectorial interactivo de las 32 entidades con geometría oficial de INEGI.
+- Lupa educativa para CDMX, Tlaxcala, Morelos, Colima, Aguascalientes y Querétaro.
+- Cuatro guías ilustrados y perfiles de narración: Matein Pompin, Andreita, Maximo y Claudis; su selector se abre desde el botón de audio del inicio.
+- Selección automática de voces `es-MX` de mayor calidad, con soporte para voces neurales del dispositivo y regreso automático a una voz local si falla la conexión.
+- Reto hablado de capitales con felicitaciones variables y personalizadas.
+- Memorama entidad–capital con siluetas, animación, efectos originales y pronunciación.
+- Rompecabezas horizontal para tablet con bandeja lateral, cronómetro, pausa, pista, piezas ampliadas y ajuste magnético.
 - Persistencia local con DataStore.
 - Motor de juegos determinista y probado.
-- Política de ampliación para entidades pequeñas sin alterar su escala geográfica.
+- Política de ampliación para entidades pequeñas sin alterar la escala del mapa nacional.
+- Nombres educativos breves para estados y capitales; los nombres oficiales se conservan internamente.
+- Efectos de sonido originales generados para AventuMapa.
 
-El mapa vectorial nacional se integrará únicamente con geometrías oficiales validadas. No se incluyen contornos aproximados.
+La disponibilidad exacta de timbres depende del motor de texto a voz instalado. AventuMapa prioriza voces `es-MX` de calidad alta o muy alta —incluidas las neurales que el dispositivo exponga— y usa ajustes de tono moderados para evitar fatiga. Si una voz conectada falla, repite la frase con la mejor voz local disponible.
 
 ## Requisitos
 

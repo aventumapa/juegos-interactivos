@@ -13,9 +13,9 @@ Los módulos `core:database`, `core:maps`, `core:designsystem` y las funciones i
 
 Las pantallas envían eventos explícitos al `AppViewModel`. El ViewModel actualiza repositorios y expone un estado inmutable mediante `StateFlow`. DataStore conserva alias, avatar, XP, estrellas, rondas y aciertos sin recopilar datos personales ni usar internet.
 
-## Estrategia cartográfica
+## Estrategia cartográfica implementada
 
-El mapa final usará geometrías vectoriales oficiales convertidas durante la compilación a coordenadas normalizadas y rutas optimizadas. El motor conservará por separado:
+El mapa usa geometrías vectoriales oficiales de INEGI convertidas mediante una herramienta reproducible a coordenadas normalizadas y rutas optimizadas. El motor conserva por separado:
 
 1. Geometría visible real.
 2. Geometría simplificada por nivel de zoom.
@@ -24,7 +24,6 @@ El mapa final usará geometrías vectoriales oficiales convertidas durante la co
 
 La geometría visible nunca se agrandará dentro del mapa nacional. Cuando una entidad sea demasiado pequeña, la selección mostrará su posición real y un recuadro conectado con la silueta ampliada sin deformación.
 
-## Límites del corte actual
+## Estado de la versión 0.2
 
-El explorador, el cuestionario, el memorama y la persistencia son funcionales. La geometría oficial, el rompecabezas geográfico, el audio, Room y el panel adulto avanzado pertenecen a las siguientes entregas.
-
+El explorador cartográfico, el cuestionario hablado, el memorama animado, el rompecabezas, la narración TTS, los efectos y la persistencia son funcionales. Room, contenido municipal, reducción de movimiento y el panel adulto avanzado pertenecen a las siguientes entregas.

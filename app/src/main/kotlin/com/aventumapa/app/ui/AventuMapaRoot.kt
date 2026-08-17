@@ -22,6 +22,7 @@ import com.aventumapa.app.ui.screens.ExploreScreen
 import com.aventumapa.app.ui.screens.HomeScreen
 import com.aventumapa.app.ui.screens.MemoryScreen
 import com.aventumapa.app.ui.screens.ParentsScreen
+import com.aventumapa.app.ui.screens.PuzzleScreen
 import com.aventumapa.app.ui.screens.QuizScreen
 import com.aventumapa.app.ui.screens.WelcomeScreen
 
@@ -32,6 +33,7 @@ private object Route {
     const val EXPLORE = "explore"
     const val QUIZ = "quiz"
     const val MEMORY = "memory"
+    const val PUZZLE = "puzzle"
     const val PARENTS = "parents"
 }
 
@@ -85,21 +87,45 @@ fun AventuMapaRoot(viewModel: AppViewModel = hiltViewModel()) {
                 onExplore = { navController.navigate(Route.EXPLORE) },
                 onQuiz = { navController.navigate(Route.QUIZ) },
                 onMemory = { navController.navigate(Route.MEMORY) },
+                onPuzzle = { navController.navigate(Route.PUZZLE) },
                 onParents = { navController.navigate(Route.PARENTS) },
+                onVoiceSelected = viewModel::selectNarratorVoice,
             )
         }
 
-        composable(Route.EXPLORE) { ExploreScreen(onBack = navController::popBackStack) }
+        composable(Route.EXPLORE) {
+            ExploreScreen(
+                profile = state.profile,
+                onBack = navController::popBackStack,
+                onSpeak = viewModel::speak,
+                onSound = viewModel::playSound,
+            )
+        }
         composable(Route.QUIZ) {
             QuizScreen(
+                profile = state.profile,
                 onBack = navController::popBackStack,
                 onRoundFinished = viewModel::recordRound,
+                onSpeak = viewModel::speak,
+                onSound = viewModel::playSound,
             )
         }
         composable(Route.MEMORY) {
             MemoryScreen(
+                profile = state.profile,
                 onBack = navController::popBackStack,
                 onRoundFinished = viewModel::recordRound,
+                onSpeak = viewModel::speak,
+                onSound = viewModel::playSound,
+            )
+        }
+        composable(Route.PUZZLE) {
+            PuzzleScreen(
+                profile = state.profile,
+                onBack = navController::popBackStack,
+                onRoundFinished = viewModel::recordRound,
+                onSpeak = viewModel::speak,
+                onSound = viewModel::playSound,
             )
         }
         composable(Route.PARENTS) {

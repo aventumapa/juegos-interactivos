@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.aventumapa.app.R
+import com.aventumapa.app.audio.SoundCue
 import com.aventumapa.app.ui.components.AventuBackground
 import com.aventumapa.app.ui.components.CompassGuide
 import com.aventumapa.app.ui.components.GuideMood
@@ -43,19 +45,24 @@ import com.aventumapa.app.ui.theme.PaleYellow
 import com.aventumapa.app.ui.theme.SuccessGreen
 import com.aventumapa.app.ui.theme.WarmCoral
 import com.aventumapa.content.mexico.MexicoContent
+import com.aventumapa.core.model.ChildProfile
+import com.aventumapa.gameengine.MotivationCoach
 import com.aventumapa.gameengine.QuizFactory
 
 @Composable
 fun QuizScreen(
+    profile: ChildProfile,
     onBack: () -> Unit,
     onRoundFinished: (correct: Int, total: Int, stars: Int) -> Unit,
+    onSpeak: (String) -> Unit,
+    onSound: (SoundCue) -> Unit,
 ) {
     val questions = remember {
         QuizFactory.capitalQuestions(
-            entities = MexicoContent.pilotEntities,
-            questionCount = 5,
+            entities = MexicoContent.entities,
+            questionCount = 8,
             optionCount = 4,
-            seed = 2_026_08_17L,
+            seed = System.currentTimeMillis(),
         )
     }
     var questionIndex by remember { mutableIntStateOf(0) }
@@ -63,13 +70,23 @@ fun QuizScreen(
     var correctCount by remember { mutableIntStateOf(0) }
     var finished by remember { mutableStateOf(false) }
     var rewardClaimed by remember { mutableStateOf(false) }
+    var feedbackMessage by remember { mutableStateOf("") }
+
+    if (!finished) {
+        LaunchedEffect(questionIndex) {
+            onSpeak(questions[questionIndex].prompt)
+        }
+    }
 
     AventuBackground {
         if (finished) {
             ResultScreen(
+                alias = profile.alias,
                 correct = correctCount,
                 total = questions.size,
                 rewardClaimed = rewardClaimed,
+                onSpeak = onSpeak,
+                onSound = onSound,
                 onClaimAndExit = {
                     if (!rewardClaimed) {
                         val stars = when {
@@ -112,24 +129,39 @@ fun QuizScreen(
                 )
                 Spacer(Modifier.height(5.dp))
                 Text(question.prompt, style = MaterialTheme.typography.headlineMedium)
+                TextButton(onClick = { onSpeak(question.prompt) }) {
+                    Text("Escuchar la pregunta")
+                }
 
                 question.options.forEach { option ->
                     AnswerCard(
                         answer = option,
                         selected = selectedAnswer == option,
                         correctAnswer = if (selectedAnswer != null) question.correctAnswer else null,
-                        onClick = { if (selectedAnswer == null) selectedAnswer = option },
+                        onClick = {
+                            if (selectedAnswer == null) {
+                                selectedAnswer = option
+                                val correct = option == question.correctAnswer
+                                feedbackMessage = if (correct) {
+                                    onSound(SoundCue.SUCCESS)
+                                    val praise = if (MotivationCoach.shouldUsePersonalPraise()) {
+                                        MotivationCoach.success(profile.alias)
+                                    } else {
+                                        "¡Respuesta correcta!"
+                                    }
+                                    "$praise ${question.explanation}"
+                                } else {
+                                    onSound(SoundCue.TRY_AGAIN)
+                                    "Casi, ${profile.alias.ifBlank { "explorador" }}. ${question.explanation} Inténtalo de nuevo en la próxima ronda."
+                                }
+                                onSpeak(feedbackMessage)
+                            }
+                        },
                     )
                 }
 
                 if (selectedAnswer != null) {
-                    InfoBanner(
-                        if (answerIsCorrect) {
-                            stringResource(R.string.correct_feedback) + " " + question.explanation
-                        } else {
-                            stringResource(R.string.incorrect_feedback) + " " + question.explanation
-                        },
-                    )
+                    InfoBanner(feedbackMessage)
                     Button(
                         onClick = {
                             val updatedCorrect = correctCount + if (answerIsCorrect) 1 else 0
@@ -139,6 +171,7 @@ fun QuizScreen(
                             } else {
                                 questionIndex += 1
                                 selectedAnswer = null
+                                feedbackMessage = ""
                             }
                         },
                         modifier = Modifier.fillMaxWidth().height(56.dp),
@@ -189,11 +222,18 @@ private fun AnswerCard(
 
 @Composable
 private fun ResultScreen(
+    alias: String,
     correct: Int,
     total: Int,
     rewardClaimed: Boolean,
+    onSpeak: (String) -> Unit,
+    onSound: (SoundCue) -> Unit,
     onClaimAndExit: () -> Unit,
 ) {
+    LaunchedEffect(Unit) {
+        onSound(SoundCue.SUCCESS)
+        onSpeak("Misión completada, ${alias.ifBlank { "explorador" }}. Acertaste $correct de $total capitales.")
+    }
     Column(
         modifier = Modifier.fillMaxSize().padding(28.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -224,4 +264,3 @@ private fun ResultScreen(
         }
     }
 }
-
