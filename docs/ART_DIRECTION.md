@@ -27,7 +27,7 @@ Los cuatro personajes de voz comparten un retrato ilustrado propio: Matein Pompi
 
 ## Rompecabezas
 
-El rompecabezas abre en orientación horizontal. El mapa colorido ocupa aproximadamente 68% del tablero y deja huecos oscuros únicamente en las entidades por colocar; la bandeja lateral reúne piezas, tiempo, avance, pista y sonido, mientras Pausa permanece al pie del mapa. El cambio de orientación se limita a esta actividad y se restaura al salir.
+El rompecabezas abre en orientación horizontal. El mapa inicia completamente sin color y ocupa aproximadamente 68% del tablero. La bandeja presenta seis siluetas por tanda y repone la siguiente tanda al completar la anterior hasta colocar las 32 entidades; cada acierto enciende únicamente el estado colocado. Tiempo, avance global, número de tanda, pista y sonido permanecen en el lateral, mientras Pausa se ubica al pie del mapa. El cambio de orientación se limita a esta actividad y se restaura al salir.
 
 ## Cartografía ilustrada
 

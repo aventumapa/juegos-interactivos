@@ -83,7 +83,13 @@ import com.aventumapa.gameengine.MotivationCoach
 import kotlinx.coroutines.delay
 import kotlin.math.sqrt
 
-private val puzzleCodes = listOf("02", "08", "14", "29", "31", "07")
+internal const val PUZZLE_BATCH_SIZE = 6
+
+internal fun puzzleBatchForProgress(codes: List<String>, placedCount: Int): List<String> {
+    if (codes.isEmpty()) return emptyList()
+    val firstIndex = (placedCount / PUZZLE_BATCH_SIZE) * PUZZLE_BATCH_SIZE
+    return codes.drop(firstIndex.coerceAtMost(codes.size)).take(PUZZLE_BATCH_SIZE)
+}
 
 @Composable
 fun PuzzleScreen(
@@ -105,6 +111,7 @@ fun PuzzleScreen(
 
     val geometry = rememberMexicoMapGeometry()
     val shapesByCode = remember(geometry) { geometry.associateBy { it.code } }
+    val puzzleCodes = remember(geometry) { geometry.map { it.code }.sorted() }
     val positions = remember { mutableStateMapOf<String, Offset>() }
     val startPositions = remember { mutableMapOf<String, Offset>() }
     var canvasSize by remember { mutableStateOf(IntSize.Zero) }
@@ -119,15 +126,21 @@ fun PuzzleScreen(
     val pieceHeight = with(density) { 58.dp.toPx() }
     val grabRadius = with(density) { 52.dp.toPx() }
     val snapRadius = with(density) { 74.dp.toPx() }
-    val complete = placedCodes.size == puzzleCodes.size
+    val currentBatchCodes = remember(puzzleCodes, placedCodes.size) {
+        puzzleBatchForProgress(puzzleCodes, placedCodes.size)
+    }
+    val currentBatchNumber = (placedCodes.size / PUZZLE_BATCH_SIZE + 1)
+        .coerceAtMost((puzzleCodes.size + PUZZLE_BATCH_SIZE - 1) / PUZZLE_BATCH_SIZE)
+    val totalBatches = (puzzleCodes.size + PUZZLE_BATCH_SIZE - 1) / PUZZLE_BATCH_SIZE
+    val complete = puzzleCodes.isNotEmpty() && placedCodes.size == puzzleCodes.size
 
-    LaunchedEffect(canvasSize) {
+    LaunchedEffect(canvasSize, currentBatchCodes, placedCodes.size) {
         if (canvasSize == IntSize.Zero) return@LaunchedEffect
         val width = canvasSize.width.toFloat()
         val height = canvasSize.height.toFloat()
         val sideLeft = width * 0.735f
         val sideWidth = width - sideLeft
-        puzzleCodes.forEachIndexed { index, code ->
+        currentBatchCodes.forEachIndexed { index, code ->
             val column = index % 2
             val row = index / 2
             val center = Offset(
@@ -149,12 +162,19 @@ fun PuzzleScreen(
     LaunchedEffect(complete) {
         if (complete) {
             onSound(SoundCue.SUCCESS)
-            onSpeak("¡Rompecabezas completado, ${profile.alias.ifBlank { "explorador" }}! Ubicaste las seis entidades en México.")
+            onSpeak("¡Rompecabezas completado, ${profile.alias.ifBlank { "explorador" }}! Ubicaste las treinta y dos entidades de México.")
+        }
+    }
+
+    LaunchedEffect(currentBatchNumber) {
+        if (currentBatchNumber > 1 && !complete) {
+            onSound(SoundCue.SUCCESS)
+            onSpeak("¡Muy bien, ${profile.alias.ifBlank { "explorador" }}! Ahora continúa con la tanda $currentBatchNumber de $totalBatches.")
         }
     }
 
     fun speakHint() {
-        val code = activeCode ?: puzzleCodes.firstOrNull { it !in placedCodes } ?: return
+        val code = activeCode ?: currentBatchCodes.firstOrNull { it !in placedCodes } ?: return
         val entity = MexicoContent.findByCode(code) ?: return
         onSound(SoundCue.TAP)
         onSpeak("Busca ${entity.learningName}. Recuerda: su capital es ${entity.capital}.")
@@ -209,11 +229,11 @@ fun PuzzleScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .onSizeChanged { canvasSize = it }
-                            .pointerInput(canvasSize, placedCodes, paused) {
+                            .pointerInput(canvasSize, placedCodes, paused, currentBatchCodes) {
                                 if (paused) return@pointerInput
                                 detectDragGestures(
                                     onDragStart = { touch ->
-                                        val candidate = puzzleCodes
+                                        val candidate = currentBatchCodes
                                             .filterNot { it in placedCodes }
                                             .minByOrNull { code -> positions[code]?.distanceSquared(touch) ?: Float.MAX_VALUE }
                                         if (candidate != null && (positions[candidate]?.distanceTo(touch) ?: Float.MAX_VALUE) <= grabRadius) {
@@ -280,15 +300,9 @@ fun PuzzleScreen(
                         withTransform({ translate(metrics.mapLeft, metrics.mapTop) }) {
                             geometry.forEach { shape ->
                                 val path = nationalPath(shape, metrics.mapWidth, metrics.mapHeight)
-                                val fillColor = when {
-                                    shape.code in puzzleCodes && shape.code !in placedCodes -> Color(0xFF173A50)
-                                    else -> mapColorForCode(shape.code)
-                                }
+                                val fillColor = if (shape.code in placedCodes) mapColorForCode(shape.code) else Color(0xFF173A50)
                                 drawPath(path, color = fillColor)
-                                drawPath(path, color = IceWhite.copy(alpha = 0.54f), style = Stroke(width = 1.dp.toPx()))
-                                if (shape.code in puzzleCodes && shape.code !in placedCodes) {
-                                    drawPath(path, color = CyanElectric.copy(alpha = 0.62f), style = Stroke(width = 2.4.dp.toPx()))
-                                }
+                                drawPath(path, color = IceWhite.copy(alpha = if (shape.code in placedCodes) 0.82f else 0.38f), style = Stroke(width = 1.dp.toPx()))
                                 if (shape.code in placedCodes) {
                                     drawPath(path, color = IceWhite, style = Stroke(width = 1.6.dp.toPx()))
                                 }
@@ -332,7 +346,7 @@ fun PuzzleScreen(
                             }
                         }
 
-                        puzzleCodes.filterNot { it in placedCodes }.forEach { code ->
+                        currentBatchCodes.filterNot { it in placedCodes }.forEach { code ->
                             val shape = shapesByCode[code] ?: return@forEach
                             val pieceCenter = positions[code] ?: return@forEach
                             val active = code == activeCode
@@ -357,6 +371,12 @@ fun PuzzleScreen(
                             "${placedCodes.size} de ${puzzleCodes.size}",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Black,
+                        )
+                        Text(
+                            "Tanda $currentBatchNumber de $totalBatches",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = CyanElectric,
+                            fontWeight = FontWeight.Bold,
                         )
                         LinearProgressIndicator(
                             progress = { placedCodes.size / puzzleCodes.size.toFloat() },

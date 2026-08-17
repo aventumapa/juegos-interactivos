@@ -4,7 +4,7 @@ AventuMapa es una aplicación Android educativa, local y sin anuncios para que n
 
 ## Estado actual
 
-Este repositorio contiene la versión jugable audiovisual 0.5.1:
+Este repositorio contiene la versión jugable audiovisual 0.5.2:
 
 - Perfil infantil local con alias y avatar.
 - Identidad visual Atlas Nocturno con marca vectorial, Explorín y tarjetas luminosas.
@@ -15,7 +15,7 @@ Este repositorio contiene la versión jugable audiovisual 0.5.1:
 - Selección automática de voces `es-MX` de mayor calidad, con soporte para voces neurales del dispositivo y regreso automático a una voz local si falla la conexión.
 - Reto hablado de capitales con felicitaciones variables y personalizadas.
 - Memorama entidad–capital con siluetas, animación, efectos originales y pronunciación.
-- Rompecabezas horizontal para tablet con bandeja lateral, cronómetro, pausa, pista, piezas ampliadas y ajuste magnético.
+- Rompecabezas horizontal de las 32 entidades: mapa inicialmente sin color, seis piezas visibles por tanda, reposición progresiva, cronómetro, pausa, pista y ajuste magnético.
 - Persistencia local con DataStore.
 - Motor de juegos determinista y probado.
 - Política de ampliación para entidades pequeñas sin alterar la escala del mapa nacional.
